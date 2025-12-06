@@ -1,0 +1,88 @@
+# ==========================
+# Global
+# ==========================
+.DS_Store
+*.swp
+*.swo
+*.tmp
+*.log
+*.bak
+
+# ==========================
+# Python / FastAPI backend
+# ==========================
+backend/__pycache__/
+backend/**/*.pyc
+backend/.venv/
+backend/venv/
+backend/env/
+backend/.mypy_cache/
+backend/.pytest_cache/
+backend/.ruff_cache/
+
+# Pip / Poetry / PDM
+*.egg-info/
+dist/
+build/
+
+# Virtual environment markers
+.env
+.env.*
+*.env.local
+
+# ==========================
+# NMEA logs / test data
+# ==========================
+*.nmea
+*.log
+*.txt
+*.ubx
+*.bin
+logs/
+data/
+dataset/
+
+# ==========================
+# Node.js / Next.js frontend
+# ==========================
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/.turbo/
+
+# Local environment files
+frontend/.env
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.production.local
+frontend/.env.test.local
+
+# Next.js build artifacts
+frontend/.npm/
+frontend/.cache/
+frontend/coverage/
+
+# ==========================
+# OS-specific
+# ==========================
+Thumbs.db
+ehthumbs.db
+
+# ==========================
+# Editor / IDE
+# ==========================
+.vscode/
+.idea/
+*.code-workspace
+
+# ==========================
+# Docker / containers (将来用)
+# ==========================
+docker-data/
+*.tar
+
+# ==========================
+# Misc
+# ==========================
+# Ignore everything in /tmp
+tmp/
