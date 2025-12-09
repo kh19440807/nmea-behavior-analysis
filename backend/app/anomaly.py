@@ -32,11 +32,13 @@ def _haversine_m(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
     return R * c
 
 
-def detect_anomalies(samples: List[dict]) -> Tuple[List[dict], Dict[str, int]]:
+def detect_anomalies(samples: List[dict]) -> Tuple[List[dict], Dict[str, int], List[dict]]:
     """
     track.samples (dict list) を受け取り、
     - anomaly_flags を埋めた samples（時刻順）
-    - summary カウンタ(dict) を返す
+    - summary カウンタ(dict)
+    - anomalies のリスト
+    を返す
     """
     if len(samples) < 2:
         return samples, {
@@ -269,7 +271,7 @@ def detect_anomalies(samples: List[dict]) -> Tuple[List[dict], Dict[str, int]]:
         "jamming_suspected_count": jam_count,
     }
 
-    return samples_sorted, summary
+    return samples_sorted, summary, anomalies
 
 
 def _add_anomaly(
