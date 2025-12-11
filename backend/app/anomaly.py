@@ -45,12 +45,15 @@ def detect_anomalies(samples: List[dict]) -> Tuple[List[dict], Dict[str, int], L
             "total_anomalies": 0,
             "spoofing_suspected_count": 0,
             "jamming_suspected_count": 0,
-        }
+        }, []
 
     anomalies: List[dict] = []
     spoof_count = 0
     jam_count = 0
 
+    # ★ 各ルールごとの発生回数を記録
+    code_counts: Dict[str, int] = {}
+    
     # 念のため時刻順に並び替え（parse_nmea側でソート済みでも保険）
     samples_sorted = sorted(samples, key=lambda s: s["t"])
     index_map = {id(s): i for i, s in enumerate(samples_sorted)}
@@ -89,6 +92,7 @@ def detect_anomalies(samples: List[dict]) -> Tuple[List[dict], Dict[str, int], L
                 code=code,
                 message=f"GNSS time went backwards by {abs(dt):.1f} seconds.",
                 severity="critical",
+                code_counts=code_counts,
             )
             curr["anomaly_flags"].append(code)
             spoof_count += 1
@@ -116,6 +120,7 @@ def detect_anomalies(samples: List[dict]) -> Tuple[List[dict], Dict[str, int], L
                     code=code,
                     message=f"GNSS time jumped forward by {dt:.1f} seconds with good signal.",
                     severity="warning",
+                    code_counts=code_counts,
                 )
                 curr["anomaly_flags"].append(code)
                 spoof_count += 1
@@ -123,8 +128,8 @@ def detect_anomalies(samples: List[dict]) -> Tuple[List[dict], Dict[str, int], L
         # ※ 時刻異常は「速度計算などに使う dt」としては扱いにくいので、
         #    あまりにも変ならここで以降の処理をスキップしても良い。
         #    ただし dt が少し大きいだけ（例: 6秒）なら、速度などに使うかどうかはポリシー次第。
-        if dt <= 0 or dt > 10:
-            # 解析に使う dt としてはスキップ（物理量のチェックには使わない）
+        # dt が短すぎると速度が暴れるので、0.5秒未満は速度判定に使わない
+        if dt <= 0.5 or dt > 10:
             continue
 
         # ========================
@@ -161,7 +166,7 @@ def detect_anomalies(samples: List[dict]) -> Tuple[List[dict], Dict[str, int], L
         # ================
 
         # R1: 物理的にありえない速度（地上車両・低空ドローン想定）
-        if inst_speed is not None and inst_speed > 120.0:  # 約432 km/h
+        if inst_speed is not None and inst_speed > 200.0:  # 約720 km/h
             code = "impossible_speed"
             _add_anomaly(
                 anomalies,
@@ -171,6 +176,7 @@ def detect_anomalies(samples: List[dict]) -> Tuple[List[dict], Dict[str, int], L
                 code=code,
                 message=f"Impossible speed {inst_speed:.1f} m/s between samples.",
                 severity="critical",
+                code_counts=code_counts,
             )
             curr["anomaly_flags"].append(code)
             spoof_count += 1
@@ -193,6 +199,7 @@ def detect_anomalies(samples: List[dict]) -> Tuple[List[dict], Dict[str, int], L
                     code=code,
                     message=f"Static-position jump: {distance_m:.1f} m while speed ~0.",
                     severity="warning",
+                    code_counts=code_counts,
                 )
                 curr["anomaly_flags"].append(code)
                 spoof_count += 1
@@ -219,6 +226,7 @@ def detect_anomalies(samples: List[dict]) -> Tuple[List[dict], Dict[str, int], L
                 code=code,
                 message=f"Satellite count dropped from {num_prev} to {num_curr}.",
                 severity="critical",
+                code_counts=code_counts,
             )
             curr["anomaly_flags"].append(code)
             jam_count += 1
@@ -240,6 +248,7 @@ def detect_anomalies(samples: List[dict]) -> Tuple[List[dict], Dict[str, int], L
                 code=code,
                 message=f"C/N0 mean dropped from {cn0_prev:.1f} to {cn0_curr:.1f} dB-Hz.",
                 severity="warning",
+                code_counts=code_counts,
             )
             curr["anomaly_flags"].append(code)
             jam_count += 1
@@ -261,6 +270,7 @@ def detect_anomalies(samples: List[dict]) -> Tuple[List[dict], Dict[str, int], L
                 code=code,
                 message=f"HDOP spiked from {hdop_prev:.2f} to {hdop_curr:.2f}.",
                 severity="warning",
+                code_counts=code_counts,
             )
             curr["anomaly_flags"].append(code)
             jam_count += 1
@@ -270,6 +280,9 @@ def detect_anomalies(samples: List[dict]) -> Tuple[List[dict], Dict[str, int], L
         "spoofing_suspected_count": spoof_count,
         "jamming_suspected_count": jam_count,
     }
+
+    # ★ デバッグ用：どのルールが何回発火したかを表示
+    print("[DEBUG] anomaly code counts:", code_counts)
 
     return samples_sorted, summary, anomalies
 
@@ -282,6 +295,7 @@ def _add_anomaly(
     code: str,
     message: str,
     severity: str = "warning",
+    code_counts: Dict[str, int] | None = None,
 ) -> None:
     anomalies.append(
         {
@@ -293,3 +307,5 @@ def _add_anomaly(
             "message": message,
         }
     )
+    if code_counts is not None:
+        code_counts[code] = code_counts.get(code, 0) + 1
