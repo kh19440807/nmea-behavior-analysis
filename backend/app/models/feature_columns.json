@@ -1,0 +1,18 @@
+[
+  "dt_p50",
+  "dt_p95",
+  "speed_pos_p95",
+  "speed_pos_max",
+  "speed_rmc_p95",
+  "speed_rmc_max",
+  "speed_mismatch_p95",
+  "heading_rate_p95",
+  "cn0_mean_p50",
+  "cn0_mean_p95",
+  "cn0_min_p05",
+  "hdop_p95",
+  "num_sats_min",
+  "num_sats_p05",
+  "n_samples",
+  "rule_impossible_speed"
+]
