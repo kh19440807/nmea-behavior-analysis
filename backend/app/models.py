@@ -2,6 +2,8 @@
 
 from pydantic import BaseModel
 from typing import List, Optional, Any
+from pydantic import BaseModel
+from typing import Any, Optional, List, Dict
 
 class Meta(BaseModel):
     file_name: str
@@ -20,7 +22,10 @@ class Summary(BaseModel):
 class AnalyzeResponse(BaseModel):
     meta: Meta
     summary: Summary
-    track: Any
-    anomalies: List[Any]
-    satellite_stats: List[Any]
-    ephemeris_consistency: Optional[Any]
+    track: Dict[str, Any]
+    anomalies: List[Dict[str, Any]]
+    satellite_stats: List[Dict[str, Any]]
+    ephemeris_consistency: Optional[Dict[str, Any]] = None
+
+    # ★これを追加（必須）
+    spoofing_score: Optional[float] = None

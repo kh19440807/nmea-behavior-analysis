@@ -14,7 +14,7 @@ from sklearn.metrics import classification_report
 from app.nmea_parser import parse_nmea_to_track
 from app.anomaly import detect_anomalies
 from app.feature_extractor import extract_file_features
-
+import joblib, json
 
 MARSIM_NMEA_DIR = Path("/home/kazuhide/marsim/data/nmea")
 
@@ -81,6 +81,12 @@ def main():
     ).sort_values(ascending=False)
     print("\nTop 20 feature importances:")
     print(importances.head(20))
+    
+    joblib.dump(rf, "model_rf.joblib")
+    with open("feature_columns.json", "w") as f:
+        json.dump(X.columns.tolist(), f, indent=2)
+
+    print("[INFO] saved model_rf.joblib and feature_columns.json")
 
 
 if __name__ == "__main__":
