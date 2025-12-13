@@ -193,24 +193,29 @@ export default function Home() {
             GNSS NMEA Behavior Analysis (Experimental)
           </h1>
 
-          <div className="space-y-3">
-            <label className="block text-sm font-medium">
-              Upload NMEA log file
+          <div className="flex flex-col gap-2">
+            <label className="px-4 py-2 bg-blue-600 text-white rounded cursor-pointer w-fit">
+              Select file
+              <input
+                type="file"
+                accept=".nmea,.txt,.log"
+                onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+                className="hidden"
+              />
             </label>
-            <input
-              type="file"
-              accept=".nmea,.txt,.log"
-              onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-              className="block w-full text-sm"
-            />
+            {file && (
+                <p className="text-xs text-slate-600">
+                  Selected file: <span className="font-mono">{file.name}</span>
+                </p>
+            )}
+
             <button
               onClick={handleUpload}
               disabled={loading}
-              className="px-4 py-2 rounded bg-blue-600 text-white text-sm font-semibold disabled:opacity-50"
+              className="px-4 py-2 rounded bg-blue-600 text-white text-sm font-semibold disabled:opacity-50 w-fit"
             >
               {loading ? "Analyzing..." : "Analyze"}
             </button>
-            {error && <p className="text-sm text-red-600">{error}</p>}
           </div>
         </div>
 
@@ -231,19 +236,19 @@ export default function Home() {
               </div>
 
               <div className="p-3 rounded bg-slate-50 border">
-                <div className="text-xs text-slate-500">Total anomalies</div>
+                <div className="text-xs text-slate-500">Total anomalies (Rule base) </div>
                 <div className="text-lg font-bold">{result.summary.total_anomalies}</div>
               </div>
 
               <div className="p-3 rounded bg-slate-50 border">
-                <div className="text-xs text-slate-500">Spoofing-related indicators</div>
+                <div className="text-xs text-slate-500">Spoofing-related indicators (Rule base) </div>
                 <div className="text-lg font-bold">
                   {result.summary.spoofing_suspected_count}
                 </div>
               </div>
 
               <div className="p-3 rounded bg-slate-50 border">
-                <div className="text-xs text-slate-500">Jamming-related indicators</div>
+                <div className="text-xs text-slate-500">Jamming-related indicators (Rule base) </div>
                 <div className="text-lg font-bold">
                   {result.summary.jamming_suspected_count}
                 </div>
