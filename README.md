@@ -22,7 +22,7 @@ The purpose of this project is technical exploration and validation, focusing on
 - Commercial services or products
 
 ## Data Sources
-- Publicly available MARSIM dataset
+- Publicly available [MARSIM dataset](https://zenodo.org/records/8202802)
 - No proprietary, confidential, or employer-owned data is used
 
 ## Disclaimer
