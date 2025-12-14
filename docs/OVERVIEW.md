@@ -79,3 +79,25 @@ It is not intended for:
 - Real-time spoofing detection
 - Safety-critical navigation systems
 - Commercial or operational deployment
+
+### Example Result: Spoofed Log
+
+![Spoofed result](images/conclusion_spoofed.png)
+
+Offline analysis result showing a high spoofing probability
+for a GNSS NMEA log from the public MARSIM dataset.
+
+### Time-series Behavior
+
+![Time series](images/timeseries_spoofed.png)
+
+Time-series plots of signal quality (C/N₀) and velocity.
+Despite stable signal strength, velocity patterns exhibit
+non-physical transitions.
+
+### Reconstructed Track
+
+![Track](images/track_spoofed.png)
+
+Reconstructed position track derived from NMEA logs,
+intended for post-event inspection.

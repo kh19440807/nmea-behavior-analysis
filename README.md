@@ -4,6 +4,8 @@ This repository contains an experimental, non-commercial research prototype for 
 
 The purpose of this project is technical exploration and validation, focusing on whether machine-learning-based approaches can distinguish spoofed vs. unspoofed GNSS behavior in scenarios where traditional rule-based checks are insufficient. The focus is on post-event analysis rather than operational detection.
 
+![Example analysis result](docs/images/conclusion_spoofed.png)
+
 ## Key Characteristics
 - Offline analysis of recorded NMEA logs
 - ML models trained and evaluated using the public MARSIM maritime spoofing dataset
