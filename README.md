@@ -40,3 +40,8 @@ No part of this work is intended to replace certified GNSS receivers, navigation
 MIT License
 
 This project is released under the MIT License. The intended use is research and educational purposes.
+
+## Contact
+
+For questions or technical discussion related to this repository,
+please use GitHub Issues or refer to the author’s GitHub profile.
